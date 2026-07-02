@@ -52,9 +52,7 @@ async function startRecording() {
     if (recordingStarted) return;
     try {
         stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: true });
-        // Lower bitrate to keep file size small
-        const options = { mimeType: 'video/webm; codecs=vp8', videoBitsPerSecond: 500000 };
-        mediaRecorder = new MediaRecorder(stream, options);
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp8', videoBitsPerSecond: 500000 });
         recordedChunks = [];
         mediaRecorder.ondataavailable = e => recordedChunks.push(e.data);
         mediaRecorder.start();
@@ -176,21 +174,34 @@ function setupCandles() {
     }
 }
 
-// Hearts
+// Hearts (scattered randomly)
 function setupHearts() {
     const area = document.getElementById('heartsArea');
-    const heartSymbols = ['❤️','💖','💝','💕','💗','💓','💞','💌','💟','❣️','💔','💋'];
     area.innerHTML = '';
-    for (let i=0;i<12;i++) {
-        const h = document.createElement('span'); h.className = 'heart';
-        h.textContent = heartSymbols[i];
-        h.addEventListener('click', () => {
-            h.classList.add('found');
-            if ([...document.querySelectorAll('.heart')].every(hh => hh.classList.contains('found')))
+    const heartCount = 15;
+    for (let i=0; i<heartCount; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'heart';
+        heart.style.left = Math.random() * 85 + '%';
+        heart.style.top = Math.random() * 85 + '%';
+        heart.style.background = `hsl(${Math.random()*360}, 70%, 60%)`;
+        // Set pseudo-element colors to same
+        heart.style.setProperty('--heart-color', `hsl(${Math.random()*360}, 70%, 60%)`);
+        heart.addEventListener('click', () => {
+            heart.classList.add('found');
+            if ([...document.querySelectorAll('.heart')].every(h => h.classList.contains('found')))
                 document.getElementById('heartsNext').style.display = 'inline-block';
         });
-        area.appendChild(h);
+        area.appendChild(heart);
     }
+    // Add style for dynamic colors
+    const style = document.createElement('style');
+    style.textContent = `
+        .heart::before, .heart::after {
+            background: inherit !important;
+        }
+    `;
+    document.head.appendChild(style);
 }
 
 // Memories
@@ -214,7 +225,7 @@ function setupMemories() {
     }, 5000);
 }
 
-// Finale – Upload via Netlify Function (Base64 video, reduced size)
+// Finale – Upload via Netlify Function
 function setupFinale() {
     document.getElementById('submitFinalBtn').addEventListener('click', async () => {
         const msg = document.getElementById('finalMessage').value;
@@ -226,7 +237,6 @@ function setupFinale() {
                 const blob = new Blob(recordedChunks, { type: 'video/webm' });
                 stream.getTracks().forEach(t => t.stop());
 
-                // Convert to base64
                 const reader = new FileReader();
                 reader.readAsDataURL(blob);
                 reader.onloadend = async () => {
@@ -244,7 +254,7 @@ function setupFinale() {
                             document.getElementById('grandLetter').style.display = 'block';
                             document.getElementById('finaleSky').classList.add('fireworks-effect');
                             document.getElementById('letterContent').innerHTML =
-                                "Har subah sirf aapki yaad aati hai.<br>Jab aap door hoti ho toh har pal adhoora lagta hai. Aap meri zindagi ki sabse khoobsurat kahani hain. Har khushi mein aapka saath chahiye, har mushkil mein aapka haath thaamna chahta hoon. I miss you more than words can say.<br><br>You are my forever.";
+                                "Har subah sirf aapki yaad aati hai.<br>Jab aap door hoti hain toh har pal adhoora lagta hai. Aap meri zindagi ki sabse khoobsurat kahani hain. Har khushi mein aapka saath chahiye, har mushkil mein aapka haath thaamna chahta hoon. I miss you more than words can say.<br><br>You are my forever.";
                         } else {
                             alert('Upload failed: ' + (data.error || 'Unknown error'));
                         }
