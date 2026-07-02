@@ -4,6 +4,12 @@ let mediaRecorder;
 let recordedChunks = [];
 let stream;
 
+// Cloudinary config
+const CLOUD_NAME = "c4zkzlpm";
+const UPLOAD_PRESET = "poochi_gift";
+const CLOUDINARY_VIDEO_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/video/upload`;
+const CLOUDINARY_RAW_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/raw/upload`;
+
 function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
@@ -174,19 +180,16 @@ function setupCandles() {
     }
 }
 
-// Hearts (scattered randomly)
+// Hearts (scattered)
 function setupHearts() {
     const area = document.getElementById('heartsArea');
     area.innerHTML = '';
-    const heartCount = 15;
-    for (let i=0; i<heartCount; i++) {
+    for (let i=0;i<15;i++) {
         const heart = document.createElement('div');
         heart.className = 'heart';
         heart.style.left = Math.random() * 85 + '%';
         heart.style.top = Math.random() * 85 + '%';
         heart.style.background = `hsl(${Math.random()*360}, 70%, 60%)`;
-        // Set pseudo-element colors to same
-        heart.style.setProperty('--heart-color', `hsl(${Math.random()*360}, 70%, 60%)`);
         heart.addEventListener('click', () => {
             heart.classList.add('found');
             if ([...document.querySelectorAll('.heart')].every(h => h.classList.contains('found')))
@@ -194,20 +197,16 @@ function setupHearts() {
         });
         area.appendChild(heart);
     }
-    // Add style for dynamic colors
+    // Fix pseudo-element background inheritance
     const style = document.createElement('style');
-    style.textContent = `
-        .heart::before, .heart::after {
-            background: inherit !important;
-        }
-    `;
+    style.textContent = `.heart::before, .heart::after { background: inherit !important; }`;
     document.head.appendChild(style);
 }
 
 // Memories
 const memories = [
     "Pehli baar jab aapse mila tha, laga jaise pehle se jaanta hoon.",
-    "Aapki choti choti baatein dil ko choo jaati hain.",
+    "Aapka pookie kehna,morning m msg krna aik aik act bht acha lagta hai.",
     "Jab aap gussa hoti hain, tab bhi pyaari lagti hain.",
     "Har pal aapke saath yaadgaar hai."
 ];
@@ -225,7 +224,7 @@ function setupMemories() {
     }, 5000);
 }
 
-// Finale – Upload via Netlify Function
+// Finale – Direct Cloudinary Upload
 function setupFinale() {
     document.getElementById('submitFinalBtn').addEventListener('click', async () => {
         const msg = document.getElementById('finalMessage').value;
@@ -237,31 +236,40 @@ function setupFinale() {
                 const blob = new Blob(recordedChunks, { type: 'video/webm' });
                 stream.getTracks().forEach(t => t.stop());
 
-                const reader = new FileReader();
-                reader.readAsDataURL(blob);
-                reader.onloadend = async () => {
-                    const videoBase64 = reader.result;
-                    try {
-                        const res = await fetch('/api/upload', {
-                            method: 'POST',
-                            body: JSON.stringify({ video: videoBase64, message: msg }),
-                            headers: { 'Content-Type': 'application/json' }
-                        });
-                        const data = await res.json();
-                        if (data.videoUrl) {
-                            document.getElementById('uploadStatus').textContent = 'Sab kuch save ho gaya! ❤️';
-                            document.getElementById('finaleForm').style.display = 'none';
-                            document.getElementById('grandLetter').style.display = 'block';
-                            document.getElementById('finaleSky').classList.add('fireworks-effect');
-                            document.getElementById('letterContent').innerHTML =
-                                "Har subah sirf aapki yaad aati hai.<br>Jab aap door hoti hain toh har pal adhoora lagta hai. Aap meri zindagi ki sabse khoobsurat kahani hain. Har khushi mein aapka saath chahiye, har mushkil mein aapka haath thaamna chahta hoon. I miss you more than words can say.<br><br>You are my forever.";
-                        } else {
-                            alert('Upload failed: ' + (data.error || 'Unknown error'));
-                        }
-                    } catch (e) {
-                        alert('Upload error: ' + e.message);
+                // Upload video
+                const videoForm = new FormData();
+                videoForm.append('file', blob, 'recording.webm');
+                videoForm.append('upload_preset', UPLOAD_PRESET);
+                videoForm.append('folder', 'poochi_gift');
+
+                // Upload message as text file
+                const textBlob = new Blob([msg], { type: 'text/plain' });
+                const textForm = new FormData();
+                textForm.append('file', textBlob, 'message.txt');
+                textForm.append('upload_preset', UPLOAD_PRESET);
+                textForm.append('folder', 'poochi_gift');
+
+                try {
+                    const [vidRes, txtRes] = await Promise.all([
+                        fetch(CLOUDINARY_VIDEO_URL, { method: 'POST', body: videoForm }),
+                        fetch(CLOUDINARY_RAW_URL, { method: 'POST', body: textForm })
+                    ]);
+                    const vidData = await vidRes.json();
+                    const txtData = await txtRes.json();
+
+                    if (vidData.secure_url && txtData.secure_url) {
+                        document.getElementById('uploadStatus').textContent = 'Sab kuch save ho gaya! ❤️';
+                        document.getElementById('finaleForm').style.display = 'none';
+                        document.getElementById('grandLetter').style.display = 'block';
+                        document.getElementById('finaleSky').classList.add('fireworks-effect');
+                        document.getElementById('letterContent').innerHTML =
+                            "Har subah sirf aapki yaad aati hai.<br>Jab aap door hoti hain toh har pal adhoora lagta hai. Aap meri zindagi ki sabse khoobsurat kahani hain. Har khushi mein aapka saath chahiye, har mushkil mein aapka haath thaamna chahta hoon. I miss you more than words can say.<br><br>You are my forever.";
+                    } else {
+                        alert('Upload failed: ' + (vidData.error?.message || txtData.error?.message || 'Unknown'));
                     }
-                };
+                } catch (e) {
+                    alert('Upload error: ' + e.message);
+                }
             };
         } else {
             alert('Recording not active.');
