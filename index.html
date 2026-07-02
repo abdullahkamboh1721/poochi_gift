@@ -6,6 +6,8 @@
     <title>Poochi's Gift</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <!-- Cloudinary SDK -->
+    <script src="https://unpkg.com/cloudinary-core@2.11.4/cloudinary-core-shrinkwrap.min.js"></script>
 </head>
 <body>
     <!-- Login Screen -->
@@ -44,7 +46,7 @@
             <div class="teddy-peek">
                 <div class="teddy"></div>
                 <div class="speech-bubble">
-                    <p>Your Shooooo Pretty jaan...</p>
+                    <p>Mujhe lagta hai aaj kuch bohot khaas hone wala hai...</p>
                 </div>
             </div>
             <button class="next-btn cute-btn" onclick="nextScene('scene2')">Next ➡️</button>
@@ -67,7 +69,7 @@
     <div id="scene3" class="screen bg-scene3">
         <div class="overlay">
             <div class="clouds"></div>
-            <h3 class="instruction">tap... 🌸</h3>
+            <h3 class="instruction">Phoolon ko tap karo... 🌸</h3>
             <div class="flower-garden" id="flowerGarden"></div>
             <button class="next-btn cute-btn" id="flowersNext" style="display:none;" onclick="nextScene('scene4')">Next ➡️</button>
         </div>
@@ -76,7 +78,7 @@
     <!-- Scene 4: Stars Catch -->
     <div id="scene4" class="screen bg-scene4">
         <div class="night-sky">
-            <h3 class="instruction" style="color:white; z-index:2;">catch stars! ⭐ (5 taare)</h3>
+            <h3 class="instruction" style="color:white; z-index:2;">Taare pakdo! ⭐ (5 taare)</h3>
             <div id="starField" style="position:relative; width:100%; height:70%;"></div>
             <div id="starCounter" style="color:white; font-size:1.5rem; z-index:2;">0 / 5</div>
             <button class="next-btn cute-btn" id="starsNext" style="display:none;" onclick="nextScene('scene5')">Next ➡️</button>
@@ -95,7 +97,7 @@
                     <div class="gift-ribbon"></div>
                 </div>
                 <div class="gift-note" id="giftNote" style="display:none;">
-                    <p>Aapke liye duaon main duniya bhar ki khushi maangi hai. 💝</p>
+                    <p>Aapke liye duniya bhar ki khushi maangi hai. 💝</p>
                 </div>
             </div>
             <button class="next-btn cute-btn" id="giftNext" style="display:none;" onclick="nextScene('scene6')">Next ➡️</button>
@@ -106,7 +108,7 @@
     <div id="scene6" class="screen bg-scene6">
         <div class="overlay">
             <div class="clouds"></div>
-            <h3 class="instruction">Smashhh! 🎈</h3>
+            <h3 class="instruction">Gubbare phodo! 🎈</h3>
             <div class="balloon-field" id="balloonField"></div>
             <button class="next-btn cute-btn" id="balloonsNext" style="display:none;" onclick="nextScene('scene7')">Next ➡️</button>
         </div>
@@ -115,7 +117,7 @@
     <!-- Scene 7: Candle Blow -->
     <div id="scene7" class="screen bg-scene7">
         <div class="night-sky">
-            <h3 class="instruction" style="color:white;">Blow The Candeles... 🎂</h3>
+            <h3 class="instruction" style="color:white;">Candles blow karo... 🎂</h3>
             <div class="candle-area" id="candleArea"></div>
             <button class="next-btn cute-btn" id="candlesNext" style="display:none;" onclick="nextScene('scene8')">Next ➡️</button>
         </div>
@@ -125,7 +127,7 @@
     <div id="scene8" class="screen bg-scene8">
         <div class="overlay">
             <div class="clouds"></div>
-            <h3 class="instruction">Find Hearts! ❤️</h3>
+            <h3 class="instruction">Chhupe hue dil dhundho! ❤️</h3>
             <div class="hearts-area" id="heartsArea"></div>
             <button class="next-btn cute-btn" id="heartsNext" style="display:none;" onclick="nextScene('scene9')">Next ➡️</button>
         </div>
@@ -135,7 +137,7 @@
     <div id="scene9" class="screen bg-scene9">
         <div class="overlay">
             <div class="clouds"></div>
-            <h3 class="instruction">Memories...</h3>
+            <h3 class="instruction">Hamari yaadein...</h3>
             <div class="memories-wall" id="memoriesWall"></div>
             <button class="next-btn cute-btn" id="memoriesNext" style="display:none;" onclick="nextScene('scene10')">Next ➡️</button>
         </div>
@@ -145,15 +147,22 @@
     <div id="scene10" class="screen bg-scene10">
         <div class="night-sky" id="finaleSky">
             <div class="center-card finale-card" id="finaleForm">
-                <h2>✨ Kch likho... ✨</h2>
+                <h2>✨ Ab aap bhi likho... ✨</h2>
                 <textarea id="finalMessage" placeholder="Apne dil ki baat likho..." rows="4"></textarea>
                 <button id="submitFinalBtn" class="cute-btn">Submit & Stop Recording 💌</button>
                 <p id="uploadStatus" style="margin-top:10px; font-size:0.9rem;"></p>
             </div>
-            <div id="grandLetter" style="display:none;" class="center-card letter-card">
+            <!-- Pigeon & Letter -->
+            <div id="pigeonContainer" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; z-index:20; pointer-events:none;">
+                <div class="pigeon">
+                    <div class="bird"></div>
+                    <div class="envelope"></div>
+                </div>
+            </div>
+            <div id="grandLetter" style="display:none;" class="center-card letter-card" onclick="this.style.display='none'">
                 <h3>🌟 Mera Wada 🌟</h3>
                 <p class="letter-content" id="letterContent"></p>
-                <p>— Youre Pookie</p>
+                <p>— Aapka apna</p>
             </div>
         </div>
     </div>
