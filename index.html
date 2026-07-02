@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Poochi's Gift</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="screen active">
+        <div class="garden-bg">
+            <div class="clouds"></div>
+            <div class="gate">
+                <h1>Poochi's Gift</h1>
+                <input type="password" id="passwordInput" placeholder="Enter secret..." maxlength="20">
+                <button id="enterBtn" class="cute-btn">Enter with Love 💕</button>
+                <p id="loginError" style="color:#ff6b6b; min-height:20px;"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Post-Login Screen -->
+    <div id="startScreen" class="screen">
+        <div class="garden-bg">
+            <div class="clouds"></div>
+            <div class="center-card">
+                <h2>Welcome, Poochi! 💖</h2>
+                <p>Let's begin our little journey...</p>
+                <div class="button-group">
+                    <button id="startMusicBtn" class="cute-btn">🎵 Start Music</button>
+                    <button id="startRecordBtn" class="cute-btn">📸 Start Recording</button>
+                </div>
+                <p id="recordStatus" style="margin-top:15px; font-size:0.9rem;"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scene 1: Teddy Peek -->
+    <div id="scene1" class="screen">
+        <div class="garden-bg">
+            <div class="clouds"></div>
+            <div class="teddy-peek">
+                <div class="teddy"></div>
+                <div class="speech-bubble">
+                    <p>Mujhe lagta hai aaj kuch bohot khaas hone wala hai...</p>
+                </div>
+            </div>
+            <button class="next-btn cute-btn" onclick="nextScene('scene2')">Next ➡️</button>
+        </div>
+    </div>
+
+    <!-- Scene 2: Butterfly Message -->
+    <div id="scene2" class="screen">
+        <div class="garden-bg">
+            <div class="clouds"></div>
+            <div class="butterfly-container">
+                <div class="butterfly"></div>
+                <div class="butterfly-text" id="butterflyText"></div>
+            </div>
+            <button class="next-btn cute-btn" id="butterflyNext" style="display:none;" onclick="nextScene('scene3')">Next ➡️</button>
+        </div>
+    </div>
+
+    <!-- Scene 3: Flowers Khilao -->
+    <div id="scene3" class="screen">
+        <div class="garden-bg">
+            <div class="clouds"></div>
+            <h3 class="instruction">Phoolon ko tap karo... 🌸</h3>
+            <div class="flower-garden" id="flowerGarden"></div>
+            <button class="next-btn cute-btn" id="flowersNext" style="display:none;" onclick="nextScene('scene4')">Next ➡️</button>
+        </div>
+    </div>
+
+    <!-- Scene 4: Stars Catch -->
+    <div id="scene4" class="screen">
+        <div class="night-sky">
+            <h3 class="instruction" style="color:white; z-index:2;">Taare pakdo! ⭐ (5 taare)</h3>
+            <div id="starField" style="position:relative; width:100%; height:70%;"></div>
+            <div id="starCounter" style="color:white; font-size:1.5rem; z-index:2;">0 / 5</div>
+            <button class="next-btn cute-btn" id="starsNext" style="display:none;" onclick="nextScene('scene5')">Next ➡️</button>
+        </div>
+    </div>
+
+    <!-- Scene 5: Teddy Gift Run -->
+    <div id="scene5" class="screen">
+        <div class="garden-bg">
+            <div class="clouds"></div>
+            <div class="gift-run-container">
+                <div class="running-teddy"></div>
+                <div class="gift-box" id="giftBox">🎁</div>
+                <div class="gift-note" id="giftNote" style="display:none;">
+                    <p>Tumhare liye duniya bhar ki khushi maangi hai. 💝</p>
+                </div>
+            </div>
+            <button class="next-btn cute-btn" id="giftNext" style="display:none;" onclick="nextScene('scene6')">Next ➡️</button>
+        </div>
+    </div>
+
+    <!-- Scene 6: Memories Wall -->
+    <div id="scene6" class="screen">
+        <div class="garden-bg">
+            <div class="clouds"></div>
+            <h3 class="instruction">Hamari yaadein...</h3>
+            <div class="memories-wall" id="memoriesWall"></div>
+            <button class="next-btn cute-btn" id="memoriesNext" style="display:none;" onclick="nextScene('scene7')">Next ➡️</button>
+        </div>
+    </div>
+
+    <!-- Scene 7: Finale -->
+    <div id="scene7" class="screen">
+        <div class="night-sky" id="finaleSky">
+            <div class="center-card finale-card" id="finaleForm">
+                <h2>✨ Ab aap bhi likho... ✨</h2>
+                <textarea id="finalMessage" placeholder="Apne dil ki baat likho..." rows="4"></textarea>
+                <button id="submitFinalBtn" class="cute-btn">Submit & Stop Recording 💌</button>
+                <p id="uploadStatus" style="margin-top:10px; font-size:0.9rem;"></p>
+            </div>
+            <div id="grandLetter" style="display:none;" class="center-card">
+                <h3>🌟 My Promise to You 🌟</h3>
+                <p class="letter-content">Har din tumhare saath bitana chahta hoon, har khushi tumse share karna chahta hoon. Tum meri zindagi ki sabse khoobsurat yaad ho. ❤️</p>
+                <p>— Tumhara apna</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden YouTube iframe -->
+    <iframe id="youtubePlayer" style="display:none;" width="560" height="315" src="https://www.youtube.com/embed/KmMHpL2BJck?enablejsapi=1&autoplay=0" frameborder="0" allow="autoplay"></iframe>
+
+    <script src="script.js"></script>
+</body>
+</html>
