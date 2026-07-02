@@ -4,11 +4,8 @@ let mediaRecorder;
 let recordedChunks = [];
 let stream;
 
-// Cloudinary config
-const CLOUD_NAME = "c4zkzlpm";
-const UPLOAD_PRESET = "poochi_gift";
-const CLOUDINARY_VIDEO_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/video/upload`;
-const CLOUDINARY_RAW_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/raw/upload`;
+// Initialize Cloudinary
+const cl = cloudinary.Cloudinary.new({ cloud_name: "c4zkzlpm" });
 
 function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -197,7 +194,6 @@ function setupHearts() {
         });
         area.appendChild(heart);
     }
-    // Fix pseudo-element background inheritance
     const style = document.createElement('style');
     style.textContent = `.heart::before, .heart::after { background: inherit !important; }`;
     document.head.appendChild(style);
@@ -206,7 +202,7 @@ function setupHearts() {
 // Memories
 const memories = [
     "Pehli baar jab aapse mila tha, laga jaise pehle se jaanta hoon.",
-    "Aapka pookie kehna,morning m msg krna aik aik act bht acha lagta hai.",
+    "Aapki choti choti baatein dil ko choo jaati hain.",
     "Jab aap gussa hoti hain, tab bhi pyaari lagti hain.",
     "Har pal aapke saath yaadgaar hai."
 ];
@@ -224,7 +220,7 @@ function setupMemories() {
     }, 5000);
 }
 
-// Finale – Direct Cloudinary Upload
+// Finale – Cloudinary SDK Upload
 function setupFinale() {
     document.getElementById('submitFinalBtn').addEventListener('click', async () => {
         const msg = document.getElementById('finalMessage').value;
@@ -232,44 +228,47 @@ function setupFinale() {
 
         if (mediaRecorder && mediaRecorder.state === 'recording') {
             mediaRecorder.stop();
-            mediaRecorder.onstop = async () => {
+            mediaRecorder.onstop = () => {
                 const blob = new Blob(recordedChunks, { type: 'video/webm' });
                 stream.getTracks().forEach(t => t.stop());
 
                 // Upload video
-                const videoForm = new FormData();
-                videoForm.append('file', blob, 'recording.webm');
-                videoForm.append('upload_preset', UPLOAD_PRESET);
-                videoForm.append('folder', 'poochi_gift');
-
-                // Upload message as text file
-                const textBlob = new Blob([msg], { type: 'text/plain' });
-                const textForm = new FormData();
-                textForm.append('file', textBlob, 'message.txt');
-                textForm.append('upload_preset', UPLOAD_PRESET);
-                textForm.append('folder', 'poochi_gift');
-
-                try {
-                    const [vidRes, txtRes] = await Promise.all([
-                        fetch(CLOUDINARY_VIDEO_URL, { method: 'POST', body: videoForm }),
-                        fetch(CLOUDINARY_RAW_URL, { method: 'POST', body: textForm })
-                    ]);
-                    const vidData = await vidRes.json();
-                    const txtData = await txtRes.json();
-
-                    if (vidData.secure_url && txtData.secure_url) {
+                cl.uploader.upload(blob, {
+                    upload_preset: "poochi_gift",
+                    folder: "poochi_gift",
+                    resource_type: "video"
+                }, (error, result) => {
+                    if (error) {
+                        alert('Video upload failed: ' + error.message);
+                        return;
+                    }
+                    // Upload message as text file
+                    const textBlob = new Blob([msg], { type: 'text/plain' });
+                    cl.uploader.upload(textBlob, {
+                        upload_preset: "poochi_gift",
+                        folder: "poochi_gift",
+                        resource_type: "raw",
+                        public_id: "message-" + Date.now(),
+                        format: "txt"
+                    }, (err, res) => {
+                        if (err) {
+                            alert('Message upload failed: ' + err.message);
+                            return;
+                        }
+                        // Success
                         document.getElementById('uploadStatus').textContent = 'Sab kuch save ho gaya! ❤️';
                         document.getElementById('finaleForm').style.display = 'none';
-                        document.getElementById('grandLetter').style.display = 'block';
                         document.getElementById('finaleSky').classList.add('fireworks-effect');
-                        document.getElementById('letterContent').innerHTML =
-                            "Har subah sirf aapki yaad aati hai.<br>Jab aap door hoti hain toh har pal adhoora lagta hai. Aap meri zindagi ki sabse khoobsurat kahani hain. Har khushi mein aapka saath chahiye, har mushkil mein aapka haath thaamna chahta hoon. I miss you more than words can say.<br><br>You are my forever.";
-                    } else {
-                        alert('Upload failed: ' + (vidData.error?.message || txtData.error?.message || 'Unknown'));
-                    }
-                } catch (e) {
-                    alert('Upload error: ' + e.message);
-                }
+                        const pigeon = document.getElementById('pigeonContainer');
+                        pigeon.style.display = 'block';
+                        const envelope = document.querySelector('.envelope');
+                        envelope.addEventListener('click', () => {
+                            document.getElementById('grandLetter').style.display = 'block';
+                            document.getElementById('letterContent').innerHTML =
+                                "Har subah sirf aapki yaad aati hai.<br>Jab aap door hoti hain toh har pal adhoora lagta hai. Aap meri zindagi ki sabse khoobsurat kahani hain. Har khushi mein aapka saath chahiye, har mushkil mein aapka haath thaamna chahta hoon. I miss you more than words can say.<br><br>You are my forever.";
+                        }, { once: true });
+                    });
+                });
             };
         } else {
             alert('Recording not active.');
