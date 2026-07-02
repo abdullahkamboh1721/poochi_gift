@@ -2,8 +2,8 @@ const cloudinary = require('cloudinary').v2;
 
 cloudinary.config({
   cloud_name: 'c4zkzlpm',
-  api_key: '752264689242465',      // <-- Cloudinary Dashboard se copy karo
-  api_secret: 'GwC-szxjB_wN31k6gePatDKF2kM' // <-- Cloudinary Dashboard se copy karo
+  api_key: '126479963934774',      // <-- Cloudinary Dashboard se copy karo
+  api_secret: '7VsdI1fJBw7cTXI9b94Lf5QBZ7w' // <-- Cloudinary Dashboard se copy karo
 });
 
 exports.handler = async (event) => {
