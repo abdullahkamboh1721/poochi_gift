@@ -6,7 +6,6 @@
     <title>Poochi's Gift</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
     <!-- Login Screen -->
@@ -142,7 +141,7 @@
     <div id="scene10" class="screen">
         <div class="night-sky" id="finaleSky">
             <div class="center-card finale-card" id="finaleForm">
-                <h2>✨ Kch likho... ✨</h2>
+                <h2>✨ Ab aap bhi likho... ✨</h2>
                 <textarea id="finalMessage" placeholder="Apne dil ki baat likho..." rows="4"></textarea>
                 <button id="submitFinalBtn" class="cute-btn">Submit & Stop Recording 💌</button>
                 <p id="uploadStatus" style="margin-top:10px; font-size:0.9rem;"></p>
@@ -150,10 +149,13 @@
             <div id="grandLetter" style="display:none;" class="center-card letter-card">
                 <h3>🌟 Mera Wada 🌟</h3>
                 <p class="letter-content" id="letterContent"></p>
-                <p>— Your Pookie</p>
+                <p>— Aapka apna</p>
             </div>
         </div>
     </div>
+
+    <!-- Audio Element (hidden) -->
+    <audio id="bgMusic" preload="auto" src="https://res.cloudinary.com/c4zkzlpm/video/upload/v1782957281/fairytale_owg3fo.mp3"></audio>
 
     <script src="script.js"></script>
 </body>
