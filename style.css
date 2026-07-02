@@ -8,17 +8,21 @@ body {
 }
 .screen { display:none; position:relative; width:100vw; height:100vh; overflow:hidden; }
 .screen.active { display:block; }
-.garden-bg {
-    background: linear-gradient(to bottom, #87CEEB 0%, #b5e48c 100%);
-    width:100%; height:100%;
-    position:relative;
-}
-.night-sky {
-    background: linear-gradient(to bottom, #1a1a2e 0%, #16213e 100%);
-    width:100%; height:100%;
-    position:relative;
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-}
+
+/* Backgrounds */
+.bg-login .garden-bg { background: linear-gradient(135deg, #667eea, #764ba2); }
+.bg-start .garden-bg { background: linear-gradient(135deg, #f093fb, #f5576c); }
+.bg-scene1 .garden-bg { background: linear-gradient(to bottom, #a1c4fd, #c2e9fb); }
+.bg-scene2 .garden-bg { background: linear-gradient(to bottom, #ffecd2, #fcb69f); }
+.bg-scene3 .garden-bg { background: linear-gradient(to bottom, #84fab0, #8fd3f4); }
+.bg-scene4 .night-sky { background: radial-gradient(ellipse at bottom, #1b2735, #090a0f); }
+.bg-scene5 .garden-bg { background: linear-gradient(135deg, #f6d365, #fda085); }
+.bg-scene6 .garden-bg { background: linear-gradient(to bottom, #a18cd1, #fbc2eb); }
+.bg-scene7 .night-sky { background: radial-gradient(ellipse at bottom, #200122, #6f0000); }
+.bg-scene8 .garden-bg { background: linear-gradient(to bottom, #ff9a9e, #fecfef); }
+.bg-scene9 .garden-bg { background: linear-gradient(to bottom, #d4a373, #e9edc9); }
+.bg-scene10 .night-sky { background: radial-gradient(ellipse at bottom, #1a2a6c, #b21f1f, #fdbb2d); }
+
 .clouds {
     position:absolute; width:200%; height:100px;
     background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100'%3E%3Ccircle cx='30' cy='50' r='25' fill='white' opacity='0.8'/%3E%3Ccircle cx='70' cy='30' r='30' fill='white' opacity='0.9'/%3E%3Ccircle cx='120' cy='60' r='35' fill='white' opacity='0.8'/%3E%3Ccircle cx='160' cy='40' r='28' fill='white' opacity='0.9'/%3E%3C/svg%3E") repeat-x;
@@ -30,14 +34,14 @@ body {
 
 .cute-btn {
     background: #c8963e; color:white; border:none; padding:14px 28px; border-radius:30px;
-    font-family: 'Dancing Script', cursive; font-weight:bold; font-size:1.2rem; letter-spacing:1px;
+    font-family: 'Dancing Script', cursive; font-weight:bold; font-size:1.3rem;
     cursor:pointer; box-shadow:0 4px 6px rgba(0,0,0,0.1); transition:0.2s; display:inline-block; margin:5px;
 }
 .cute-btn:active { transform:scale(0.95); background:#a67c2e; }
 .next-btn { position:absolute; bottom:25px; right:20px; z-index:10; }
 
 .gate { text-align:center; position:absolute; top:30%; width:100%; }
-.gate h1 { font-size:3.5rem; color:#4a0e4e; text-shadow:2px 2px white; }
+.gate h1 { font-size:3.5rem; color:#fff; text-shadow:2px 2px #4a0e4e; }
 #passwordInput { padding:12px 20px; border-radius:30px; border:2px solid #c8963e; font-size:1.1rem; margin:20px 0; width:70%; max-width:280px; }
 #loginError { font-size:0.9rem; }
 
@@ -61,13 +65,27 @@ body {
 .butterfly::before, .butterfly::after { content:''; position:absolute; width:20px; height:20px; background:#ff6b9d; border-radius:50%; top:5px; }
 .butterfly::before { left:-12px; } .butterfly::after { right:-12px; }
 @keyframes fly { 0% { transform:translateY(0) rotate(0deg); } 100% { transform:translateY(-20px) rotate(5deg); } }
-.butterfly-text { font-size:2rem; color:#4a0e4e; margin-top:30px; min-height:60px; }
+.butterfly-text { font-size:2rem; color:#fff; margin-top:30px; min-height:60px; text-shadow:2px 2px 4px rgba(0,0,0,0.5); }
 
 .flower-garden { display:flex; justify-content:space-around; align-items:flex-end; height:60%; position:relative; z-index:2; }
 .flower { width:50px; height:80px; background:#8B5A2B; border-radius:0 0 5px 5px; position:relative; transition:0.3s; cursor:pointer; }
 .flower::before { content:''; position:absolute; top:-20px; left:-10px; width:70px; height:40px; background:#ccc; border-radius:50%; transition:0.5s; }
 .flower.bloomed::before { background:#ff69b4; }
-.flower-text { position:absolute; top:-60px; left:50%; transform:translateX(-50%); width:120px; text-align:center; font-size:1rem; opacity:0; transition:0.5s; }
+.flower-text {
+    position: absolute;
+    top: -70px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    text-align: center;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    padding: 4px 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    opacity:0;
+    transition: opacity 0.5s;
+}
 .flower.bloomed .flower-text { opacity:1; }
 
 .star {
@@ -87,7 +105,6 @@ body {
 @keyframes shake { 0% { transform:rotate(-5deg); } 100% { transform:rotate(5deg); } }
 .gift-note { position:absolute; top:100px; left:30%; width:150px; background:white; padding:10px; border-radius:10px; font-size:1rem; }
 
-/* Balloons */
 .balloon-field { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; margin-top:50px; }
 .balloon { width:60px; height:80px; background:red; border-radius:50% 50% 50% 50% / 40% 40% 60% 60%; position:relative; cursor:pointer; transition:0.2s; animation: floatBalloon 3s infinite alternate; }
 .balloon::after { content:''; position:absolute; bottom:-10px; left:50%; transform:translateX(-50%); width:2px; height:20px; background:#888; }
@@ -100,9 +117,22 @@ body {
 .candle.out::before { opacity:0; }
 @keyframes flicker { 0% { opacity:1; } 100% { opacity:0.5; } }
 
-.hearts-area { display:flex; flex-wrap:wrap; justify-content:center; gap:15px; margin-top:30px; }
-.heart { font-size:2rem; cursor:pointer; opacity:0.3; transition:0.3s; }
-.heart.found { opacity:1; }
+.hearts-area {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    padding: 20px;
+    max-width: 90vw;
+    margin: 20px auto;
+}
+.heart {
+    font-size: 2.5rem;
+    text-align: center;
+    opacity: 0.15;
+    transition: opacity 0.3s, transform 0.2s;
+    cursor: pointer;
+}
+.heart.found { opacity: 1; transform: scale(1.2); }
 
 .memories-wall { display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-top:20px; }
 .frame {
@@ -124,4 +154,4 @@ textarea { width:100%; padding:12px; border-radius:15px; border:2px solid #c8963
 }
 @keyframes sparkle { 0% { opacity:0.5; } 100% { opacity:1; } }
 
-.instruction { font-size:2rem; color:#4a0e4e; margin-top:30px; z-index:2; position:relative; }
+.instruction { font-size:2rem; color:#fff; margin-top:30px; z-index:2; position:relative; text-shadow:2px 2px 4px rgba(0,0,0,0.5); }
