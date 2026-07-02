@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Poochi's Gift</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
     <!-- Login Screen -->
@@ -91,42 +92,68 @@
                 <div class="running-teddy"></div>
                 <div class="gift-box" id="giftBox">🎁</div>
                 <div class="gift-note" id="giftNote" style="display:none;">
-                    <p>Tumhare liye duniya bhar ki khushi maangi hai. 💝</p>
+                    <p>Aapke liye duniya bhar ki khushi maangi hai. 💝</p>
                 </div>
             </div>
             <button class="next-btn cute-btn" id="giftNext" style="display:none;" onclick="nextScene('scene6')">Next ➡️</button>
         </div>
     </div>
 
-    <!-- Scene 6: Memories Wall -->
+    <!-- Scene 6: Balloon Pop -->
     <div id="scene6" class="screen">
+        <div class="garden-bg">
+            <div class="clouds"></div>
+            <h3 class="instruction">Gubbare phodo! 🎈</h3>
+            <div class="balloon-field" id="balloonField"></div>
+            <button class="next-btn cute-btn" id="balloonsNext" style="display:none;" onclick="nextScene('scene7')">Next ➡️</button>
+        </div>
+    </div>
+
+    <!-- Scene 7: Candle Blow -->
+    <div id="scene7" class="screen">
+        <div class="night-sky">
+            <h3 class="instruction" style="color:white;">Candles blow karo... 🎂</h3>
+            <div class="candle-area" id="candleArea"></div>
+            <button class="next-btn cute-btn" id="candlesNext" style="display:none;" onclick="nextScene('scene8')">Next ➡️</button>
+        </div>
+    </div>
+
+    <!-- Scene 8: Hidden Hearts -->
+    <div id="scene8" class="screen">
+        <div class="garden-bg">
+            <div class="clouds"></div>
+            <h3 class="instruction">Chhupe hue dil dhundho! ❤️</h3>
+            <div class="hearts-area" id="heartsArea"></div>
+            <button class="next-btn cute-btn" id="heartsNext" style="display:none;" onclick="nextScene('scene9')">Next ➡️</button>
+        </div>
+    </div>
+
+    <!-- Scene 9: Memories Wall -->
+    <div id="scene9" class="screen">
         <div class="garden-bg">
             <div class="clouds"></div>
             <h3 class="instruction">Hamari yaadein...</h3>
             <div class="memories-wall" id="memoriesWall"></div>
-            <button class="next-btn cute-btn" id="memoriesNext" style="display:none;" onclick="nextScene('scene7')">Next ➡️</button>
+            <button class="next-btn cute-btn" id="memoriesNext" style="display:none;" onclick="nextScene('scene10')">Next ➡️</button>
         </div>
     </div>
 
-    <!-- Scene 7: Finale -->
-    <div id="scene7" class="screen">
+    <!-- Scene 10: Finale -->
+    <div id="scene10" class="screen">
         <div class="night-sky" id="finaleSky">
             <div class="center-card finale-card" id="finaleForm">
-                <h2>✨ Ab aap bhi likho... ✨</h2>
+                <h2>✨ Kch likho... ✨</h2>
                 <textarea id="finalMessage" placeholder="Apne dil ki baat likho..." rows="4"></textarea>
                 <button id="submitFinalBtn" class="cute-btn">Submit & Stop Recording 💌</button>
                 <p id="uploadStatus" style="margin-top:10px; font-size:0.9rem;"></p>
             </div>
-            <div id="grandLetter" style="display:none;" class="center-card">
-                <h3>🌟 My Promise to You 🌟</h3>
-                <p class="letter-content">Har din tumhare saath bitana chahta hoon, har khushi tumse share karna chahta hoon. Tum meri zindagi ki sabse khoobsurat yaad ho. ❤️</p>
-                <p>— Tumhara apna</p>
+            <div id="grandLetter" style="display:none;" class="center-card letter-card">
+                <h3>🌟 Mera Wada 🌟</h3>
+                <p class="letter-content" id="letterContent"></p>
+                <p>— Your Pookie</p>
             </div>
         </div>
     </div>
-
-    <!-- Hidden YouTube iframe -->
-    <iframe id="youtubePlayer" style="display:none;" width="560" height="315" src="https://www.youtube.com/embed/KmMHpL2BJck?enablejsapi=1&autoplay=0" frameborder="0" allow="autoplay"></iframe>
 
     <script src="script.js"></script>
 </body>
