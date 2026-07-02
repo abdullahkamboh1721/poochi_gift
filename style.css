@@ -10,7 +10,7 @@ body {
 .screen.active { display:block; }
 .overlay { position:relative; width:100%; height:100%; }
 
-/* Background Gradients with Animations */
+/* Background Gradients */
 .bg-login { background: linear-gradient(135deg, #667eea, #764ba2); }
 .bg-start { background: linear-gradient(135deg, #f093fb, #f5576c); }
 .bg-scene1 { background: linear-gradient(to bottom, #a1c4fd, #c2e9fb); }
@@ -180,7 +180,7 @@ body {
 /* Finale */
 .finale-card { margin:20px auto; }
 textarea { width:100%; padding:12px; border-radius:15px; border:2px solid #c8963e; font-family:'Dancing Script', cursive; font-size:1.2rem; resize:none; }
-.letter-card { background:rgba(255,255,255,0.9); padding:20px; max-width:350px; text-align:left; }
+.letter-card { background:rgba(255,255,255,0.95); padding:20px; max-width:350px; text-align:left; z-index:30; cursor:pointer; }
 .letter-content { font-size:1.3rem; line-height:1.8; margin:15px 0; }
 
 .fireworks-effect {
@@ -192,3 +192,74 @@ textarea { width:100%; padding:12px; border-radius:15px; border:2px solid #c8963
 @keyframes sparkle { 0% { opacity:0.5; } 100% { opacity:1; } }
 
 .instruction { font-size:2rem; color:#fff; margin-top:30px; z-index:2; position:relative; text-shadow:2px 2px 4px rgba(0,0,0,0.5); }
+
+/* Pigeon animation */
+.pigeon {
+    position: absolute;
+    top: 40%;
+    left: -200px;
+    animation: pigeonFly 4s forwards;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.bird {
+    width: 60px;
+    height: 40px;
+    background: #d3d3d3;
+    border-radius: 50% 50% 20% 20%;
+    position: relative;
+}
+.bird::after { /* tail */
+    content: '';
+    position: absolute;
+    right: -10px;
+    top: 15px;
+    width: 20px;
+    height: 15px;
+    background: #b0b0b0;
+    border-radius: 0 0 30% 0;
+}
+.bird::before { /* beak */
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 15px;
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 12px solid orange;
+}
+.envelope {
+    width: 80px;
+    height: 50px;
+    background: #f5f5dc;
+    border: 2px solid #8B4513;
+    position: relative;
+    margin-top: 5px;
+    animation: swing 1s infinite alternate;
+    cursor: pointer;
+    pointer-events: auto;
+}
+.envelope::after { /* flap */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 40px solid transparent;
+    border-right: 40px solid transparent;
+    border-bottom: 25px solid #e6d5b8;
+    transform: translateY(-10px);
+}
+@keyframes pigeonFly {
+    0% { left: -200px; }
+    70% { left: 40%; }
+    100% { left: 40%; }
+}
+@keyframes swing {
+    0% { transform: rotate(-5deg); }
+    100% { transform: rotate(5deg); }
+}
